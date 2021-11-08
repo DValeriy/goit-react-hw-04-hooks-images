@@ -51,7 +51,6 @@ class App extends Component {
         galerySize: galleryTotal,
         galleryImg: [...prev.galleryImg, ...gallery],
       }));
-      this.togglePreloader();
       if (page !== 1)
         window.scrollTo({
           top: document.documentElement.scrollHeight,
@@ -59,17 +58,18 @@ class App extends Component {
         });
     } else if (gallery && gallery.length === 0) {
       Notiflix.Notify.warning("No result for your request!");
-      return;
+      this.setState({ querry: "", page: 1 });
     }
+    this.togglePreloader();
   };
 
   componentDidUpdate(prevProps, prevState) {
     const { querry, page, galleryImg } = this.state;
-    if (prevState.querry !== querry) {
+    if (querry && prevState.querry !== querry) {
       this.setState({ galleryImg: [], page: 1 });
       this.loadImg();
     }
-    if (prevState.page !== page && page !== 1) {
+    if (querry && prevState.page !== page && page !== 1) {
       this.loadImg();
       return;
     }
@@ -79,6 +79,7 @@ class App extends Component {
     const { galleryImg, imgUrl, isShowModal, isShowLoader, galerySize } =
       this.state;
     const difTotalandGallery = galerySize - galleryImg.length;
+    console.log("ok");
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.onSubmit} />
