@@ -1,6 +1,7 @@
 import s from "./App.module.css";
 
 import { Component } from "react";
+import Notiflix from "notiflix";
 
 import Searchbar from "../Searchbar/";
 import ImageGallery from "../ImageGallery/";
@@ -11,76 +12,83 @@ import { getImgRequest } from "../../services/api";
 
 class App extends Component {
   state = {
-    gallery: [],
+    galerySize: 0,
+    galleryImg: [],
     isShowModal: false,
     isShowLoader: false,
     querry: "",
-    error: false,
+    // error: false,
     page: 1,
     imgUrl: "",
   };
   onSubmit = ({ querry }) => {
-    this.setState({ querry });
+    this.setState({ querry, page: 1 });
   };
   togglePreloader = () => {
     this.setState((prev) => ({ isShowLoader: !prev.isShowLoader }));
   };
 
-  handleLoadMore = () => {
+  handleBtnLoadMore = () => {
     this.setState((prev) => ({ page: prev.page + 1 }));
   };
   handleImgClick = (largeImageURL) => {
-    this.setState({ isShowModal: !this.state.isShowModal });
-    this.setState({ imgUrl: largeImageURL });
+    this.setState({
+      isShowModal: !this.state.isShowModal,
+      imgUrl: largeImageURL,
+    });
   };
   handleModalClose = () => {
     this.setState({ isShowModal: !this.state.isShowModal });
   };
+  loadImg = async () => {
+    const { querry, page, galleryImg } = this.state;
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { querry, page } = this.state;
+    this.togglePreloader();
+
+    const { gallery, galleryTotal } = await getImgRequest(querry, page);
+    if (gallery && gallery.length) {
+      this.setState((prev) => ({
+        galerySize: galleryTotal,
+        galleryImg: [...prev.galleryImg, ...gallery],
+      }));
+      this.togglePreloader();
+      if (page !== 1)
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "smooth",
+        });
+    } else if (gallery && gallery.length === 0) {
+      Notiflix.Notify.warning("No result for your request!");
+      return;
+    }
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    const { querry, page, galleryImg } = this.state;
     if (prevState.querry !== querry) {
-      this.togglePreloader();
-      this.setState({ page: 1 });
-      const gallery = await getImgRequest(querry, page);
-      this.setState({ gallery: [...gallery] });
-      this.togglePreloader();
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
+      this.setState({ galleryImg: [], page: 1 });
+      this.loadImg();
     }
-    if (prevState.page !== page) {
-      this.togglePreloader();
-      const gallery = await getImgRequest(querry, page);
-      this.setState((prev) => ({ gallery: [...prev.gallery, ...gallery] }));
-      this.togglePreloader();
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-    if (prevState.querry !== querry && prevState.page !== page) {
-      this.togglePreloader();
-      const gallery = await getImgRequest(querry, page);
-      this.setState({ gallery: [...gallery] });
-      this.togglePreloader();
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
+    if (prevState.page !== page && page !== 1) {
+      this.loadImg();
+      return;
     }
   }
 
   render() {
-    const { gallery, imgUrl, isShowModal, isShowLoader } = this.state;
+    const { galleryImg, imgUrl, isShowModal, isShowLoader, galerySize } =
+      this.state;
+    const difTotalandGallery = galerySize - galleryImg.length;
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery gallery={gallery} handleImgClick={this.handleImgClick} />
+        <ImageGallery
+          gallery={galleryImg}
+          handleImgClick={this.handleImgClick}
+        />
         {isShowLoader && <Loader />}
-        {!isShowLoader && !!gallery.length && (
-          <Button handleLoadMore={this.handleLoadMore} />
+        {!isShowLoader && !!galleryImg.length && difTotalandGallery && (
+          <Button handleLoadMore={this.handleBtnLoadMore} />
         )}
         {isShowModal && (
           <Modal imgUrl={imgUrl} handleModalClose={this.handleModalClose} />
