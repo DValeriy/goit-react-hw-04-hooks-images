@@ -17,7 +17,6 @@ export const getImgRequest = async (querry = "cat", page = 1) => {
     const galleryTotal = response.data.total;
     return { gallery, galleryTotal };
   } catch (error) {
-    Notiflix.Notify.failure(error);
-    return false;
+    throw error;
   }
 };

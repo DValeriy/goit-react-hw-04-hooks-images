@@ -1,12 +1,13 @@
 import s from "./Searchbar.module.css";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 
-class Searchbar extends Component {
+class Searchbar extends PureComponent {
   state = {
     querry: "",
   };
+
   handleChange = ({ target }) => {
     const { value } = target;
     this.setState({ querry: value });
