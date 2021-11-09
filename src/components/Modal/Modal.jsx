@@ -7,7 +7,7 @@ class Modal extends PureComponent {
   state = {};
   cbOnClick = (e) => {
     const { handleModalClose } = this.props;
-    handleModalClose();
+    if (e.currentTarget === e.target) handleModalClose();
   };
   cbOnKeyDown = (event) => {
     const { handleModalClose } = this.props;

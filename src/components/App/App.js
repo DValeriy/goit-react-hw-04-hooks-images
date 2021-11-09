@@ -89,10 +89,12 @@ class App extends Component {
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery
-          gallery={galleryImg}
-          handleImgClick={this.handleImgClick}
-        />
+        {galleryImg.length && (
+          <ImageGallery
+            gallery={galleryImg}
+            handleImgClick={this.handleImgClick}
+          />
+        )}
         {isShowLoader && <Loader />}
         {!isShowLoader && !!galleryImg.length && difTotalandGallery && (
           <Button handleLoadMore={this.handleBtnLoadMore} />
