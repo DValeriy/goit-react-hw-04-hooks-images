@@ -89,7 +89,7 @@ class App extends Component {
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.onSubmit} />
-        {galleryImg.length && (
+        {!!galleryImg.length && (
           <ImageGallery
             gallery={galleryImg}
             handleImgClick={this.handleImgClick}
