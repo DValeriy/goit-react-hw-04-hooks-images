@@ -1,43 +1,35 @@
 import s from "./Modal.module.css";
 
 import PropTypes from "prop-types";
-import { PureComponent } from "react";
+import { useEffect } from "react";
 
-class Modal extends PureComponent {
-  state = {};
-  cbOnClick = (e) => {
-    const { handleModalClose } = this.props;
+const Modal = ({ handleModalClose, imgUrl }) => {
+  const cbOnClick = (e) => {
     if (e.currentTarget === e.target) handleModalClose();
   };
-  cbOnKeyDown = (event) => {
-    const { handleModalClose } = this.props;
-    // if (event.keyCode === 27) handleModalClose();
+
+  const cbOnKeyDown = (event) => {
     if (event.code === "Escape") handleModalClose();
   };
-  componentDidMount() {
-    window.addEventListener("keydown", this.cbOnKeyDown);
-  }
-  componentWillUnmount() {
-    window.removeEventListener("keydown", this.cbOnKeyDown);
-  }
-  render() {
-    const { imgUrl } = this.props;
-    return (
-      <div
-        className={s.Overlay}
-        onClick={this.cbOnClick}
-        onKeyDown={this.cbOnKeyDown}
-      >
-        <div className={s.Modal}>
-          <img src={imgUrl} alt={imgUrl} />
-        </div>
+  useEffect(() => {
+    window.addEventListener("keydown", cbOnKeyDown);
+    return () => {
+      window.removeEventListener("keydown", cbOnKeyDown);
+    };
+  }, []);
+
+  return (
+    <div className={s.Overlay} onClick={cbOnClick} onKeyDown={cbOnKeyDown}>
+      <div className={s.Modal}>
+        <img src={imgUrl} alt={imgUrl} />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 Modal.propTypes = {
   imgUrl: PropTypes.string.isRequired,
   handleModalClose: PropTypes.func.isRequired,
 };
+
 export default Modal;
