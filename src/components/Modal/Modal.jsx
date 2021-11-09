@@ -1,9 +1,9 @@
 import s from "./Modal.module.css";
 
 import PropTypes from "prop-types";
-import { Component } from "react";
+import { PureComponent } from "react";
 
-class Modal extends Component {
+class Modal extends PureComponent {
   state = {};
   cbOnClick = (e) => {
     const { handleModalClose } = this.props;
