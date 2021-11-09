@@ -4,6 +4,7 @@ import s from "./ImageGallery.module.css";
 import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
 
 const ImageGallery = ({ gallery, handleImgClick }) => {
+  console.log("ImageGallery");
   const elements = gallery.map(({ id, ...props }) => {
     return (
       <ImageGalleryItem key={id} {...props} handleImgClick={handleImgClick} />

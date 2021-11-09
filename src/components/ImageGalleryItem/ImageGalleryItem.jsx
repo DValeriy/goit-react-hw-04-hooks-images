@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import s from "./ImageGalleryItem.module.css";
 
 const ImageGalleryItem = ({ webformatURL, largeImageURL, handleImgClick }) => {
+  console.log("ImageGalleryItem");
   const cbOnClick = (e) => handleImgClick(largeImageURL);
   return (
     <li className={s.ImageGalleryItem} onClick={cbOnClick}>
