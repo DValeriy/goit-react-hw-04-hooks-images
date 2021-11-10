@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 import s from "./ImageGallery.module.css";
 import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
@@ -23,4 +23,4 @@ ImageGallery.propTypes = {
   handleImgClick: PropTypes.func.isRequired,
 };
 
-export default ImageGallery;
+export default memo(ImageGallery);

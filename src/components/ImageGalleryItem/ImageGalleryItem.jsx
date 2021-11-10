@@ -4,6 +4,7 @@ import s from "./ImageGalleryItem.module.css";
 
 const ImageGalleryItem = ({ webformatURL, largeImageURL, handleImgClick }) => {
   const cbOnClick = (e) => handleImgClick(largeImageURL);
+  console.log("webformatURL");
   return (
     <li className={s.ImageGalleryItem} onClick={cbOnClick}>
       <img

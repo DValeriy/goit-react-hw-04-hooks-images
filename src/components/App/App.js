@@ -1,6 +1,6 @@
 import s from "./App.module.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Notiflix from "notiflix";
 
 import Searchbar from "../Searchbar/";
@@ -26,14 +26,14 @@ const App = () => {
   const handleBtnLoadMore = () => {
     setPage(page + 1);
   };
-  const handleImgClick = (largeImageURL) => {
+  const handleImgClick = useCallback((largeImageURL) => {
     setImgUrl(largeImageURL);
-  };
+  }, []);
   const handleModalClose = () => {
     setImgUrl("");
   };
 
-  const loadImg = async () => {
+  const loadImg = useCallback(async () => {
     setIsShowLoader(true);
     try {
       const { gallery, galleryTotal } = await getImgRequest(querry, page);
@@ -58,11 +58,11 @@ const App = () => {
       Notiflix.Notify.failure(error.message);
       setIsShowLoader(false);
     }
-  };
+  }, [querry, page]);
   useEffect(() => {
     if (!querry) return;
     loadImg();
-  }, [querry, page]);
+  }, [querry, page, loadImg]);
 
   const difTotalandGallery = galerySize - galleryImg.length;
   return (
@@ -72,7 +72,7 @@ const App = () => {
         <ImageGallery gallery={galleryImg} handleImgClick={handleImgClick} />
       )}
       {isShowLoader && <Loader />}
-      {!isShowLoader && !!galleryImg.length && difTotalandGallery && (
+      {!isShowLoader && !!galleryImg.length && !!difTotalandGallery && (
         <Button handleLoadMore={handleBtnLoadMore} />
       )}
       {imgUrl && <Modal imgUrl={imgUrl} handleModalClose={handleModalClose} />}
