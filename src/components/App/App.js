@@ -38,7 +38,7 @@ const App = () => {
     try {
       const { gallery, galleryTotal } = await getImgRequest(querry, page);
 
-      if (gallery && gallery.length) {
+      if (gallery.length) {
         setGalerySize(galleryTotal);
         setGalleryImg([...galleryImg, ...gallery]);
         setIsShowLoader(false);
@@ -47,7 +47,7 @@ const App = () => {
             top: document.documentElement.scrollHeight,
             behavior: "smooth",
           });
-      } else if (gallery && gallery.length === 0) {
+      } else if (gallery.length === 0) {
         Notiflix.Notify.warning("No result for your request!");
         setQuerry("");
         setPage(1);
